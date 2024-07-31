@@ -6,7 +6,7 @@ import React from "react";
 import Header from "@/components/Header";
 import Hero from "../Hero";
 import Block from "../blocks";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useMotionValueEvent, useScroll } from "framer-motion";
 import { useAppContext } from "@/context/AppContext";
 
 export interface HomePageProps {
@@ -15,6 +15,7 @@ export interface HomePageProps {
 }
 
 export default function HomePage({ data, encodeDataAttribute }: HomePageProps) {
+  const [visible, setVisible] = React.useState(false);
   const ref = React.useRef<HTMLDivElement>(null);
   const { cellW, backgroundImage } = useAppContext();
   const { scrollYProgress } = useScroll({
@@ -22,33 +23,66 @@ export default function HomePage({ data, encodeDataAttribute }: HomePageProps) {
     offset: [`start ${cellW}px`, `end ${cellW}px`],
   });
 
-  const { scrollYProgress: toExit } = useScroll({
-    target: ref,
-    offset: [`end ${cellW}px`, `end start`],
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest === 1) {
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
   });
 
-  const translateY = useTransform(toExit, [0, 1], ["-100%", "0%"]);
+  const spacerRef = React.useRef<HTMLDivElement>(null);
+  const { scrollYProgress: spacerYProgress } = useScroll({
+    target: ref,
+    offset: [`start ${cellW}px`, `end ${cellW}px`],
+  });
+
+  useMotionValueEvent(spacerYProgress, "change", (latest) => {
+    if (latest === 1) {
+      spacerRef.current?.classList.add("invisible");
+    } else {
+      spacerRef.current?.classList.remove("invisible");
+    }
+  });
 
   return (
     <div
       style={{
         backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
-        backgroundSize: "auto",
-        backgroundRepeat: "repeat",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed",
       }}
     >
       <Hero image={data.image} scrollYProgress={scrollYProgress} />
-      <div className="sticky top-0 min-h-screen">
-        <motion.div style={{ translateY }} className="sticky top-0 z-10 w-full">
-          <Header />
-        </motion.div>
-        <div className="h-[100vh]" ref={ref} />
-        <motion.div>
-          {data.content.map((block) => (
-            <Block key={block._key} {...block} />
-          ))}
-        </motion.div>
-      </div>
+      <Header visible={visible} />
+      <div ref={ref} className="h-screen" />
+      {data.content.map((block, index) => (
+        <Section block={block} index={index} key={block._key} />
+      ))}
     </div>
+  );
+}
+
+function Section({
+  block,
+  index,
+}: {
+  block: HomePagePayload["content"][0];
+  index: number;
+}) {
+  const { cellW } = useAppContext();
+
+  const ref = React.useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: [`${cellW}px end`, `end ${cellW}px`],
+  });
+
+  return (
+    <>
+      <Block block={block} scrollYProgress={scrollYProgress} index={index} />
+      <div ref={ref} className="h-screen"></div>
+    </>
   );
 }

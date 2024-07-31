@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 
 type Props = {
   noOfCells: number;
@@ -9,9 +9,6 @@ function getRandomIndex(max: number) {
 }
 
 export default function usePixelate({ noOfCells }: Props) {
-  const cells = useRef<number[]>(
-    Array.from({ length: noOfCells }, (_, i) => i),
-  );
   const [toPaint, setToPaint] = React.useState<number[]>([]);
 
   // save interval id in ref
@@ -20,18 +17,17 @@ export default function usePixelate({ noOfCells }: Props) {
   // run interval on mount to paint cells randomly
   // when getting a cell from cells, remove it from cells and add it to toPaint
   React.useEffect(() => {
+    let cells = Array.from({ length: noOfCells }, (_, i) => i);
+
     function updateCellsToPaint() {
-      const randomIdx = getRandomIndex(cells.current.length);
-      const cell = cells.current[randomIdx];
-      cells.current = [
-        ...cells.current.slice(0, randomIdx),
-        ...cells.current.slice(randomIdx + 1),
-      ];
+      const randomIdx = getRandomIndex(cells.length);
+      const cell = cells[randomIdx];
+      cells = [...cells.slice(0, randomIdx), ...cells.slice(randomIdx + 1)];
       setToPaint([...toPaint, cell]);
     }
 
     interval.current = window.setInterval(() => {
-      if (cells.current.length === 0) {
+      if (cells.length === 0) {
         clearInterval(interval.current!);
         interval.current = null;
       } else {
@@ -43,7 +39,7 @@ export default function usePixelate({ noOfCells }: Props) {
       window.clearInterval(interval.current!);
       interval.current = null;
     };
-  }, [toPaint]);
+  }, [toPaint, noOfCells]);
 
   return toPaint;
 }

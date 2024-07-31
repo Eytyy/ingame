@@ -1,14 +1,27 @@
 import { IStatsSection } from "@/types";
 import React, { PropsWithChildren } from "react";
 import StatBlock from "./StatBlock";
+import {
+  motion,
+  MotionValue,
+  useMotionValueEvent,
+  useTransform,
+} from "framer-motion";
 
-export default function StatsSection({ block }: { block: IStatsSection }) {
+export default function StatsSection({
+  block,
+  scrollYProgress,
+}: {
+  block: IStatsSection;
+  scrollYProgress: MotionValue;
+}) {
   const { stats, noOfItemsPerRow } = block;
   return (
-    <div className="lg:grid lg:grid-cols-12 lg:py-[var(--cellW)]">
+    <div className="sticky top-[var(--cellW)] min-h-screen lg:grid lg:grid-cols-12 lg:py-[var(--cellW)]">
       <div className="col-span-9 col-start-3 space-y-[var(--cellW)] lg:grid lg:grid-cols-9 lg:space-y-0">
         {stats.map((stat) => (
           <StatWrapper
+            scrollYProgress={scrollYProgress}
             key={stat._key}
             index={stats.indexOf(stat)}
             noOfItemsPerRow={noOfItemsPerRow}
@@ -25,20 +38,56 @@ function StatWrapper({
   children,
   index,
   noOfItemsPerRow,
+  scrollYProgress,
 }: PropsWithChildren<{
   index: number;
   noOfItemsPerRow: 1 | 2 | 3;
+  scrollYProgress: MotionValue;
 }>) {
   // each item is 2 columns wide, with a 1 column gap
   const colStart = 1 + (index % noOfItemsPerRow) * 3;
+  let cells = Array.from({ length: 2 * 2 }, (_, i) => i);
+  const noOfCells = useTransform(
+    scrollYProgress,
+    [0, 0.5, 0.8, 1],
+    [0, cells.length, cells.length, 0],
+  );
+
+  const [cellsInView, setCellsInView] = React.useState(0);
+  const [visible, setVisible] = React.useState(false);
+
+  useMotionValueEvent(noOfCells, "change", (latest) => {
+    const no = Math.round(latest);
+    setCellsInView(no);
+  });
+
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    console.log(latest);
+    if (latest >= 0.5 && latest < 0.9) {
+      setVisible(true);
+    } else {
+      setVisible(false);
+    }
+  });
+
+  const cellsToRender = cells.slice(0, cellsInView);
+  console.log(visible);
   return (
     <div
+      className="relative aspect-square"
       style={{
         gridColumnStart: colStart,
         gridColumnEnd: `span 2`,
       }}
     >
-      <div className="bg-black p-8 lg:aspect-square">{children}</div>
+      <div className="absolute inset-0 grid grid-cols-2">
+        {cellsToRender.map((cell, index) => (
+          <div key={index} className="bg-black lg:aspect-square" />
+        ))}
+      </div>
+      {visible ? (
+        <div className="relative bg-black p-8 lg:aspect-square">{children}</div>
+      ) : null}
     </div>
   );
 }
