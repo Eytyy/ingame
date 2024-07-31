@@ -50,7 +50,7 @@ export default function HomePage({ data, encodeDataAttribute }: HomePageProps) {
       style={{
         backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
         backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
+        backgroundRepeat: "repeat",
         backgroundAttachment: "fixed",
       }}
     >
@@ -58,31 +58,8 @@ export default function HomePage({ data, encodeDataAttribute }: HomePageProps) {
       <Header visible={visible} />
       <div ref={ref} className="h-screen" />
       {data.content.map((block, index) => (
-        <Section block={block} index={index} key={block._key} />
+        <Block block={block} index={index} key={block._key} />
       ))}
     </div>
-  );
-}
-
-function Section({
-  block,
-  index,
-}: {
-  block: HomePagePayload["content"][0];
-  index: number;
-}) {
-  const { cellW } = useAppContext();
-
-  const ref = React.useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: [`${cellW}px end`, `end ${cellW}px`],
-  });
-
-  return (
-    <>
-      <Block block={block} scrollYProgress={scrollYProgress} index={index} />
-      <div ref={ref} className="h-screen"></div>
-    </>
   );
 }
