@@ -78,7 +78,7 @@ function ImageSquare({
     <motion.div
       className="relative col-span-1 aspect-square"
       style={{
-        backgroundColor: `hsl(${square.color.h}, ${square.color.s}%, ${square.color.l}%)`,
+        backgroundColor: `hsl(${square.color.h}deg, ${square.color.s}%, ${square.color.l}%)`,
         opacity,
       }}
     />

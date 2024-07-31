@@ -1,6 +1,5 @@
 import { rgbToHsl } from "@/lib/utils";
 import React from "react";
-import { Image } from "sanity";
 
 // define a generate squares function
 // first we define an array to store the squares
@@ -27,6 +26,8 @@ export default function usePixelate({
       const squares = [];
       const canvas = document.createElement("canvas");
       const context = canvas.getContext("2d");
+      canvas.width = dimensions.w;
+      canvas.height = dimensions.h;
       const pl = Math.round(dimensions.w / pixelationLevel);
       const w = Math.floor(dimensions.w);
       const h = Math.floor(dimensions.h);
@@ -48,7 +49,7 @@ export default function usePixelate({
               color: {
                 h: h * 360,
                 s: s * 100,
-                l: l * 50,
+                l: l * 100,
               },
               rowIndex: y / pl,
               visibilityChance: Math.random() > 0.2 ? 0 : 1,
@@ -64,9 +65,9 @@ export default function usePixelate({
     },
     [],
   );
-
   const squares = React.useMemo(() => {
     if (!image || !dimensions.w) return [];
+    console.log(image.src);
     return generateSquares(image, dimensions, 7);
   }, [image, dimensions, generateSquares]);
 

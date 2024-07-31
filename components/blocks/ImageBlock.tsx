@@ -45,8 +45,9 @@ export default function ImageBlock({
           alt="cover image"
           fill
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-          onLoad={() => {
-            setLoadedImage(document.querySelector("img") as HTMLImageElement);
+          onLoad={(event) => {
+            const img = event.target as HTMLImageElement;
+            setLoadedImage(img);
           }}
         />
       </motion.div>
