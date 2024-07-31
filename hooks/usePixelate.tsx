@@ -43,8 +43,13 @@ export default function usePixelate({
             let b = imgData.data[i + 2];
             let a = imgData.data[i + 3];
 
+            const [h, s, l] = rgbToHsl(r, g, b, a);
             squares.push({
-              color: `rgb(${r}, ${g}, ${b})`,
+              color: {
+                h: h * 360,
+                s: s * 100,
+                l: l * 50,
+              },
               rowIndex: y / pl,
               visibilityChance: Math.random() > 0.2 ? 0 : 1,
             });

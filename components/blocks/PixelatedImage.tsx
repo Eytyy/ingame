@@ -48,7 +48,6 @@ export default function PixelatedImage({
   );
 
   const cellsToRender = squares.slice(0, cellsInView);
-
   return (
     <>
       {cellsToRender.map((s, index) => (
@@ -79,7 +78,7 @@ function ImageSquare({
     <motion.div
       className="relative col-span-1 aspect-square"
       style={{
-        backgroundColor: square.color,
+        backgroundColor: `hsl(${square.color.h}, ${square.color.s}%, ${square.color.l}%)`,
         opacity,
       }}
     />

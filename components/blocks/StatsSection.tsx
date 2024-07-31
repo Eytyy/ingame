@@ -10,7 +10,7 @@ import {
 import { useAppContext } from "@/context/AppContext";
 
 export default function StatsSection({ block }: { block: IStatsSection }) {
-  const { cellW } = useAppContext();
+  const { cellW, backgroundImage } = useAppContext();
 
   const { stats, noOfItemsPerRow } = block;
   const ref = React.useRef<HTMLDivElement>(null);
@@ -20,7 +20,14 @@ export default function StatsSection({ block }: { block: IStatsSection }) {
   });
   return (
     <div>
-      <div className="sticky top-[var(--cellW)] min-h-screen lg:grid lg:grid-cols-12 lg:py-[var(--cellW)]">
+      <div
+        className="sticky top-[var(--cellW)] lg:grid lg:grid-cols-12 lg:py-[var(--cellW)]"
+        style={{
+          backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
+          backgroundSize: "auto",
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         <div className="col-span-9 col-start-3 space-y-[var(--cellW)] lg:grid lg:grid-cols-9 lg:space-y-0">
           {stats.map((stat) => (
             <StatWrapper
@@ -34,7 +41,7 @@ export default function StatsSection({ block }: { block: IStatsSection }) {
           ))}
         </div>
       </div>
-      <div ref={ref} className="h-screen bg-[red]" />
+      <div ref={ref} className="h-screen" />
     </div>
   );
 }
