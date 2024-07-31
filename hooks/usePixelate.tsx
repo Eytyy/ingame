@@ -1,45 +1,69 @@
-import React, { useMemo, useRef } from "react";
+import { rgbToHsl } from "@/lib/utils";
+import React from "react";
+import { Image } from "sanity";
 
-type Props = {
-  noOfCells: number;
-};
+// define a generate squares function
+// first we define an array to store the squares
+// 1. use canvas to draw the image
+// 2. get the image data
+// 3. loop through the image data and and pushes the square color to the squares array
+// 4. return the squares array
+//
+// the function accepts an image, dimensions, and pixelation level
 
-function getRandomIndex(max: number) {
-  return Math.floor(Math.random() * max);
-}
+export default function usePixelate({
+  image,
+  dimensions,
+}: {
+  image: HTMLImageElement | null;
+  dimensions: { w: number; h: number };
+}) {
+  const generateSquares = React.useCallback(
+    (
+      image: HTMLImageElement,
+      dimensions: { w: number; h: number },
+      pixelationLevel: number,
+    ) => {
+      const squares = [];
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+      const pl = Math.round(dimensions.w / pixelationLevel);
+      const w = Math.floor(dimensions.w);
+      const h = Math.floor(dimensions.h);
 
-export default function usePixelate({ noOfCells }: Props) {
-  const [toPaint, setToPaint] = React.useState<number[]>([]);
+      if (context) {
+        context.drawImage(image, 0, 0, w, h);
+        const imgData = context.getImageData(0, 0, w, h);
+        context.clearRect(0, 0, w, h);
+        for (let y = 0; y < h; y += pl) {
+          for (let x = 0; x < w; x += pl) {
+            let i = (x + y * w) * 4;
+            let r = imgData.data[i];
+            let g = imgData.data[i + 1];
+            let b = imgData.data[i + 2];
+            let a = imgData.data[i + 3];
 
-  // save interval id in ref
-  const interval = React.useRef<number | null>(null);
-
-  // run interval on mount to paint cells randomly
-  // when getting a cell from cells, remove it from cells and add it to toPaint
-  React.useEffect(() => {
-    let cells = Array.from({ length: noOfCells }, (_, i) => i);
-
-    function updateCellsToPaint() {
-      const randomIdx = getRandomIndex(cells.length);
-      const cell = cells[randomIdx];
-      cells = [...cells.slice(0, randomIdx), ...cells.slice(randomIdx + 1)];
-      setToPaint([...toPaint, cell]);
-    }
-
-    interval.current = window.setInterval(() => {
-      if (cells.length === 0) {
-        clearInterval(interval.current!);
-        interval.current = null;
-      } else {
-        updateCellsToPaint();
+            squares.push({
+              color: `rgb(${r}, ${g}, ${b})`,
+              rowIndex: y / pl,
+              visibilityChance: Math.random() > 0.2 ? 0 : 1,
+            });
+          }
+        }
       }
-    }, 100);
 
-    return () => {
-      window.clearInterval(interval.current!);
-      interval.current = null;
-    };
-  }, [toPaint, noOfCells]);
+      // delete the canvas
+      canvas.remove();
 
-  return toPaint;
+      return squares;
+    },
+    [],
+  );
+
+  const squares = React.useMemo(() => {
+    if (!image || !dimensions.w) return [];
+    return generateSquares(image, dimensions, 7);
+  }, [image, dimensions, generateSquares]);
+
+  return squares;
 }

@@ -15,7 +15,7 @@ export interface ITwoColSection {
   layout: "contentImage" | "imageContent";
   heading: string;
   description: string;
-  image: Image;
+  image: ImageProps;
 }
 
 export interface IStatsSection {
@@ -31,4 +31,9 @@ export interface IStatBlock {
   stat: number;
   format: string;
   description: string;
+}
+
+export interface ImageProps extends Image {
+  width: number;
+  height: number;
 }

@@ -2,34 +2,39 @@ import { IStatsSection } from "@/types";
 import React, { PropsWithChildren } from "react";
 import StatBlock from "./StatBlock";
 import {
-  motion,
   MotionValue,
   useMotionValueEvent,
+  useScroll,
   useTransform,
 } from "framer-motion";
+import { useAppContext } from "@/context/AppContext";
 
-export default function StatsSection({
-  block,
-  scrollYProgress,
-}: {
-  block: IStatsSection;
-  scrollYProgress: MotionValue;
-}) {
+export default function StatsSection({ block }: { block: IStatsSection }) {
+  const { cellW } = useAppContext();
+
   const { stats, noOfItemsPerRow } = block;
+  const ref = React.useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: [`start end`, `end ${cellW}px`],
+  });
   return (
-    <div className="sticky top-[var(--cellW)] min-h-screen lg:grid lg:grid-cols-12 lg:py-[var(--cellW)]">
-      <div className="col-span-9 col-start-3 space-y-[var(--cellW)] lg:grid lg:grid-cols-9 lg:space-y-0">
-        {stats.map((stat) => (
-          <StatWrapper
-            scrollYProgress={scrollYProgress}
-            key={stat._key}
-            index={stats.indexOf(stat)}
-            noOfItemsPerRow={noOfItemsPerRow}
-          >
-            <StatBlock {...stat} />
-          </StatWrapper>
-        ))}
+    <div>
+      <div className="sticky top-[var(--cellW)] min-h-screen lg:grid lg:grid-cols-12 lg:py-[var(--cellW)]">
+        <div className="col-span-9 col-start-3 space-y-[var(--cellW)] lg:grid lg:grid-cols-9 lg:space-y-0">
+          {stats.map((stat) => (
+            <StatWrapper
+              scrollYProgress={scrollYProgress}
+              key={stat._key}
+              index={stats.indexOf(stat)}
+              noOfItemsPerRow={noOfItemsPerRow}
+            >
+              <StatBlock {...stat} />
+            </StatWrapper>
+          ))}
+        </div>
       </div>
+      <div ref={ref} className="h-screen bg-[red]" />
     </div>
   );
 }
@@ -47,11 +52,7 @@ function StatWrapper({
   // each item is 2 columns wide, with a 1 column gap
   const colStart = 1 + (index % noOfItemsPerRow) * 3;
   let cells = Array.from({ length: 2 * 2 }, (_, i) => i);
-  const noOfCells = useTransform(
-    scrollYProgress,
-    [0, 0.5, 0.8, 1],
-    [0, cells.length, cells.length, 0],
-  );
+  const noOfCells = useTransform(scrollYProgress, [0, 0.25], [0, cells.length]);
 
   const [cellsInView, setCellsInView] = React.useState(0);
   const [visible, setVisible] = React.useState(false);
@@ -62,8 +63,7 @@ function StatWrapper({
   });
 
   useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    console.log(latest);
-    if (latest >= 0.5 && latest < 0.9) {
+    if (latest >= 0.25 && latest < 0.8) {
       setVisible(true);
     } else {
       setVisible(false);
@@ -71,7 +71,6 @@ function StatWrapper({
   });
 
   const cellsToRender = cells.slice(0, cellsInView);
-  console.log(visible);
   return (
     <div
       className="relative aspect-square"
