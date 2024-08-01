@@ -1,9 +1,5 @@
 "use client";
 
-import { MotionValue } from "framer-motion";
-
-const offscreenCanvas = document.createElement("canvas");
-
 export interface ISquare {
   color: {
     h: number;
@@ -29,6 +25,8 @@ export function drawPixilatedImage({
   image: HTMLImageElement;
   output?: "canvas" | "squares";
 }): HTMLCanvasElement | ISquare[] {
+  const offscreenCanvas = document.createElement("canvas");
+
   offscreenCanvas.width = w;
   offscreenCanvas.height = h;
   const ctx = offscreenCanvas.getContext("2d");

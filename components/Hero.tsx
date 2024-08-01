@@ -62,6 +62,7 @@ function Canvas({ image, scrollYProgress }: ICanvas) {
 
   const updateCanvas = React.useCallback(
     ({ ctx }: { ctx: CanvasRenderingContext2D }) => {
+      if (typeof window === "undefined") return;
       const offscreenCanvas = drawPixilatedImage({
         w,
         h,

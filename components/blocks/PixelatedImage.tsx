@@ -17,14 +17,17 @@ export function FirstPixelatedImage({
 }) {
   const { noOfRows, cellW, windowHeight } = useAppContext();
 
-  const squares = drawPixilatedImage({
-    image,
-    h: windowHeight - cellW,
-    w: cellW * 7,
-    pixelationLevel: 7,
-    saturationLevel: 1,
-    output: "squares",
-  }) as ISquare[];
+  const squares =
+    typeof window !== "undefined"
+      ? (drawPixilatedImage({
+          image,
+          h: windowHeight - cellW,
+          w: cellW * 7,
+          pixelationLevel: 7,
+          saturationLevel: 1,
+          output: "squares",
+        }) as ISquare[])
+      : [];
 
   const [cellsInView, setCellsInView] = React.useState(0);
 
