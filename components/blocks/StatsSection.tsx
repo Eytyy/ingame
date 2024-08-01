@@ -2,37 +2,27 @@ import { IStatsSection } from "@/types";
 import React, { PropsWithChildren } from "react";
 import StatBlock from "./StatBlock";
 import { useInView } from "framer-motion";
-import { useAppContext } from "@/context/AppContext";
 
 export default function StatsSection({ block }: { block: IStatsSection }) {
-  const { backgroundImage } = useAppContext();
-
   const { stats, noOfItemsPerRow } = block;
   const ref = React.useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true });
   return (
-    <div>
-      <div
-        ref={ref}
-        className="top-[var(--cellW)] lg:grid lg:grid-cols-12 lg:py-[var(--cellW)]"
-        style={{
-          backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
-          backgroundSize: "auto",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <div className="col-span-9 col-start-3 space-y-[var(--cellW)] lg:grid lg:grid-cols-9 lg:space-y-0">
-          {stats.map((stat) => (
-            <StatWrapper
-              inView={inView}
-              key={stat._key}
-              index={stats.indexOf(stat)}
-              noOfItemsPerRow={noOfItemsPerRow}
-            >
-              <StatBlock {...stat} />
-            </StatWrapper>
-          ))}
-        </div>
+    <div
+      ref={ref}
+      className="relative lg:grid lg:grid-cols-12 lg:py-[calc(var(--cellW)*2)]"
+    >
+      <div className="col-span-9 col-start-3 space-y-[var(--cellW)] lg:grid lg:grid-cols-9 lg:space-y-0">
+        {stats.map((stat) => (
+          <StatWrapper
+            inView={inView}
+            key={stat._key}
+            index={stats.indexOf(stat)}
+            noOfItemsPerRow={noOfItemsPerRow}
+          >
+            <StatBlock {...stat} />
+          </StatWrapper>
+        ))}
       </div>
     </div>
   );

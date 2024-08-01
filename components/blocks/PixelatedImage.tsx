@@ -5,35 +5,33 @@ import {
   useTransform,
 } from "framer-motion";
 import React from "react";
-import usePixelate from "@/hooks/usePixelate";
 import { useAppContext } from "@/context/AppContext";
+import { drawPixilatedImage, ISquare } from "@/lib/canvas.utils";
 
-export default function PixelatedImage({
+export function FirstPixelatedImage({
   image,
-  imageWrapperDimensions,
   scrollYProgress,
-  first,
 }: {
   image: HTMLImageElement;
-  imageWrapperDimensions: { w: number; h: number };
   scrollYProgress: MotionValue<number>;
-  first: boolean;
 }) {
-  const { noOfRows } = useAppContext();
+  const { noOfRows, cellW, windowHeight } = useAppContext();
 
-  const squares = usePixelate({
+  const squares = drawPixilatedImage({
     image,
-    dimensions: imageWrapperDimensions,
-  });
+    h: windowHeight - cellW,
+    w: cellW * 7,
+    pixelationLevel: 7,
+    saturationLevel: 1,
+    output: "squares",
+  }) as ISquare[];
 
-  const [cellsInView, setCellsInView] = React.useState(
-    first ? 0 : squares.length,
-  );
+  const [cellsInView, setCellsInView] = React.useState(0);
 
   const noOfCells = useTransform(
     scrollYProgress,
-    first ? [0, 0.333] : [0],
-    first ? [0, squares.length] : [squares.length],
+    [0, 0.333],
+    [0, squares.length],
   );
 
   useMotionValueEvent(noOfCells, "change", (latest) => {
@@ -43,7 +41,7 @@ export default function PixelatedImage({
 
   const rowProgress = useTransform(
     scrollYProgress,
-    first ? [0.333, 0.666] : [0, 0.5],
+    [0.333, 0.666],
     [0, noOfRows],
   );
 
@@ -61,11 +59,39 @@ export default function PixelatedImage({
   );
 }
 
+export function PixelatedImage({ image }: { image: HTMLImageElement }) {
+  const { cellW, windowHeight } = useAppContext();
+
+  const squares = drawPixilatedImage({
+    image,
+    h: windowHeight - cellW,
+    w: cellW * 7,
+    pixelationLevel: 7,
+    saturationLevel: 1,
+    output: "squares",
+  }) as ISquare[];
+
+  return (
+    <>
+      {squares.map((s, index) => (
+        <motion.div
+          key={`pixel-${index}`}
+          className="relative col-span-1 aspect-square"
+          style={{
+            backgroundColor: `hsl(${s.color.h}deg, ${s.color.s}%, ${s.color.l}%)`,
+            opacity: s.visibilityChance === 1 ? 1 : 0,
+          }}
+        />
+      ))}
+    </>
+  );
+}
+
 function ImageSquare({
   square,
   rowProgress,
 }: {
-  square: ReturnType<typeof usePixelate>[0];
+  square: ISquare;
   rowProgress: MotionValue<number>;
 }) {
   const opacity = useTransform(rowProgress, (value) => {

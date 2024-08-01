@@ -1,4 +1,4 @@
-import { rgbToHsl } from "@/lib/utils";
+import { rgbToHsl } from "@/lib/canvas.utils";
 import React from "react";
 
 // define a generate squares function
@@ -67,7 +67,6 @@ export default function usePixelate({
   );
   const squares = React.useMemo(() => {
     if (!image || !dimensions.w) return [];
-    console.log(image.src);
     return generateSquares(image, dimensions, 7);
   }, [image, dimensions, generateSquares]);
 

@@ -9,8 +9,8 @@ import {
   useTransform,
 } from "framer-motion";
 import { default as NextImage } from "next/image";
-import { rgbToHsl } from "@/lib/utils";
 import { useAppContext } from "@/context/AppContext";
+import { drawPixilatedImage } from "../lib/canvas.utils";
 
 interface IHero {
   image: ImageProps & {
@@ -22,40 +22,30 @@ interface IHero {
 }
 
 export default function Hero(props: IHero) {
-  const [dimensions, setDimensions] = React.useState({ w: 0, h: 0 });
   const [image, setImage] = React.useState<HTMLImageElement | null>(null);
-  const refCB = React.useCallback((node: HTMLImageElement) => {
-    if (node !== null) {
-      setImage(node);
-    }
-  }, []);
+  const { windowWidth: w } = useAppContext();
 
-  React.useLayoutEffect(() => {
-    const w = window.innerWidth;
-    const h = window.innerHeight;
-    setDimensions({ w, h });
-  }, []);
-
-  return dimensions.w !== 0 && image ? (
-    <Canvas
-      dimensions={dimensions}
-      image={image}
-      scrollYProgress={props.scrollYProgress}
-    />
+  return w !== 0 && image ? (
+    <Canvas image={image} scrollYProgress={props.scrollYProgress} />
   ) : (
     <div className="aspect-video h-screen">
-      <NextImage ref={refCB} src="/taxi.webp" alt="Taxi" fill />
+      <NextImage
+        priority
+        onLoad={(e) => setImage(e.target as HTMLImageElement)}
+        src="/taxi.webp"
+        alt="Taxi"
+        fill
+      />
     </div>
   );
 }
 
 interface ICanvas {
-  dimensions: { w: number; h: number };
   image: HTMLImageElement;
   scrollYProgress: MotionValue;
 }
 
-function Canvas({ dimensions, image, scrollYProgress }: ICanvas) {
+function Canvas({ image, scrollYProgress }: ICanvas) {
   const canvas = React.useRef<HTMLCanvasElement>(null);
   const [ctx, setCTX] = React.useState<CanvasRenderingContext2D | null>(null);
   const pixelationLevel = useTransform(
@@ -68,65 +58,71 @@ function Canvas({ dimensions, image, scrollYProgress }: ICanvas) {
     [0.5, 0.9, 1],
     [1, 0, 0],
   );
-  const { updateBG, backgroundImage } = useAppContext();
+  const { windowHeight: h, windowWidth: w, updateBG } = useAppContext();
 
-  const drawPixilatedImage = React.useCallback(() => {
-    const { w, h } = dimensions;
-    const pl = Math.round(dimensions.w / pixelationLevel.get());
-    if (ctx) {
-      ctx.drawImage(image, 0, 0, w, h);
-      const imgData = ctx.getImageData(0, 0, w, h);
+  const updateCanvas = React.useCallback(
+    ({ ctx }: { ctx: CanvasRenderingContext2D }) => {
+      const offscreenCanvas = drawPixilatedImage({
+        w,
+        h,
+        pixelationLevel: pixelationLevel.get(),
+        saturationLevel: saturationLevel.get(),
+        image,
+      }) as HTMLCanvasElement;
       ctx.clearRect(0, 0, w, h);
-
-      for (let y = 0; y < h; y += pl) {
-        for (let x = 0; x < w; x += pl) {
-          let i = (x + y * w) * 4;
-          let r = imgData.data[i];
-          let g = imgData.data[i + 1];
-          let b = imgData.data[i + 2];
-          let a = imgData.data[i + 3];
-          const [h, s, l] = rgbToHsl(r, g, b, a);
-          const adjustedS = s * saturationLevel.get();
-          ctx.fillStyle = `hsl(${h * 360}, ${adjustedS * 100}%, ${l * 100}%)`;
-          ctx.fillRect(x, y, pl, pl);
-        }
-      }
-    }
-  }, [pixelationLevel, dimensions, saturationLevel, image, ctx]);
+      ctx.drawImage(offscreenCanvas, 0, 0);
+    },
+    [w, h, pixelationLevel, saturationLevel, image],
+  );
 
   React.useLayoutEffect(() => {
     if (canvas.current) {
-      canvas.current.width = dimensions.w;
-      canvas.current.height = dimensions.h;
+      canvas.current.width = w;
+      canvas.current.height = h;
       const context = canvas.current.getContext("2d", {
         willReadFrequently: true,
       });
       context!.imageSmoothingEnabled = false;
       setCTX(context);
     }
-  }, [dimensions]);
+  }, [w, h]);
+
+  const setupBG = React.useCallback(
+    (ctx: CanvasRenderingContext2D) => {
+      if (!ctx) return;
+      const offscreenCanvas = drawPixilatedImage({
+        w,
+        h,
+        pixelationLevel: 12,
+        saturationLevel: 0,
+        image,
+      }) as HTMLCanvasElement;
+
+      updateBG(offscreenCanvas.toDataURL());
+    },
+    [w, h, image, updateBG],
+  );
 
   React.useEffect(() => {
-    drawPixilatedImage();
-  }, [drawPixilatedImage, dimensions, pixelationLevel]);
-
-  useMotionValueEvent(scrollYProgress, "change", (latest) => {
-    if (latest === 1 && !backgroundImage) {
-      updateBG(canvas.current!.toDataURL());
+    if (ctx) {
+      setupBG(ctx);
+      updateCanvas({ ctx });
     }
+  }, [updateCanvas, setupBG, ctx]);
 
-    drawPixilatedImage();
+  useMotionValueEvent(scrollYProgress, "change", () => {
+    if (ctx) {
+      updateCanvas({ ctx });
+    }
   });
 
-  const opacity = useTransform(scrollYProgress, [0.999, 1], [1, 0]);
+  const opacity = useTransform(scrollYProgress, [0.99, 1], [1, 0]);
 
   return (
-    <>
-      <motion.canvas
-        ref={canvas}
-        className="fixed left-0 top-0 block h-screen w-screen"
-        style={{ opacity }}
-      />
-    </>
+    <motion.canvas
+      ref={canvas}
+      className="fixed left-0 top-0 block h-screen w-screen"
+      style={{ opacity }}
+    />
   );
 }

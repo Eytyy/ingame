@@ -50,7 +50,7 @@ export default function HomePage({ data, encodeDataAttribute }: HomePageProps) {
       style={{
         backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
         backgroundSize: "cover",
-        backgroundRepeat: "repeat",
+        backgroundRepeat: "no-repeat",
         backgroundAttachment: "fixed",
       }}
     >

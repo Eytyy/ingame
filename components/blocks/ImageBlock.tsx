@@ -4,19 +4,17 @@ import React from "react";
 import { urlForImage } from "@/sanity/lib/image";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import PixelatedImage from "./PixelatedImage";
+import { FirstPixelatedImage, PixelatedImage } from "./PixelatedImage";
 
 export default function ImageBlock({
   image,
   layout,
   scrollYProgress,
-  imageWrapperDimensions,
   first,
 }: {
   image: ImageProps;
   layout: ITwoColSection["layout"];
   scrollYProgress: MotionValue;
-  imageWrapperDimensions: { w: number; h: number };
   first: boolean;
 }) {
   const [loadedImage, setLoadedImage] = React.useState<HTMLImageElement | null>(
@@ -41,6 +39,7 @@ export default function ImageBlock({
         style={{ opacity: first ? imageOpacity : 1 }}
       >
         <Image
+          className="object-cover"
           src={imageURL}
           alt="cover image"
           fill
@@ -52,12 +51,16 @@ export default function ImageBlock({
         />
       </motion.div>
       {loadedImage ? (
-        <PixelatedImage
-          first={first}
-          scrollYProgress={scrollYProgress}
-          image={loadedImage}
-          imageWrapperDimensions={imageWrapperDimensions}
-        />
+        <>
+          {first ? (
+            <FirstPixelatedImage
+              scrollYProgress={scrollYProgress}
+              image={loadedImage}
+            />
+          ) : (
+            <PixelatedImage image={loadedImage} />
+          )}
+        </>
       ) : null}
     </div>
   );

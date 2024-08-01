@@ -5,8 +5,11 @@ import { ITwoColSection } from "@/types";
 import React from "react";
 import { useAppContext } from "@/context/AppContext";
 import ImageBlock from "./ImageBlock";
-import TextBlock from "./TextBlock";
-import { cn } from "@/lib/utils";
+import TextBlockWrapper, {
+  AnimatedTextCells,
+  TextBlock,
+  TextCells,
+} from "./TextBlock";
 
 export default function TwoColsSection({
   block,
@@ -17,11 +20,7 @@ export default function TwoColsSection({
 }) {
   const { image, heading, description, layout } = block;
 
-  const { cellW, noOfCols, noOfRows, backgroundImage } = useAppContext();
-  const [imageWrapperDimensions, setImageWrapperDimensions] = React.useState({
-    w: 0,
-    h: 0,
-  });
+  const { cellW } = useAppContext();
 
   const ref = React.useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -29,61 +28,33 @@ export default function TwoColsSection({
     offset: [`${cellW}px end`, `end ${cellW}px`],
   });
 
-  React.useEffect(() => {
-    if (typeof window !== "undefined") {
-      // update imageWrapperHeight
-      const imageOffset = cellW;
-
-      // set imageWrapperHeight as css variable
-      document.documentElement.style.setProperty(
-        "--imageWrapperHeight",
-        `${window.innerHeight - imageOffset}px`,
-      );
-
-      setImageWrapperDimensions({
-        w: cellW * 7,
-        h: window.innerHeight - imageOffset,
-      });
-
-      // update textWrapperHeight
-      const totalHeight = cellW * noOfRows;
-      const excessHeight = Math.abs(window.innerHeight - totalHeight);
-      const textOffset = cellW * 2;
-
-      // set textWrapperHeight as css variable
-      document.documentElement.style.setProperty(
-        "--textWrapperHeight",
-        `${window.innerHeight - textOffset - excessHeight}px`,
-      );
-    }
-  }, [cellW, noOfCols, noOfRows]);
-
   return (
     <div>
-      <div
-        className="sticky top-[var(--cellW)] text-white lg:grid lg:grid-cols-12"
-        style={{
-          backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
-          backgroundSize: "auto",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
+      <div className="sticky top-0 pt-[var(--cellW)] text-white lg:grid lg:grid-cols-12">
         <ImageBlock
           first={first}
           image={image}
           layout={layout}
           scrollYProgress={scrollYProgress}
-          imageWrapperDimensions={imageWrapperDimensions}
         />
-        <TextBlock
-          heading={heading}
-          description={description}
-          layout={layout}
-          scrollYProgress={scrollYProgress}
-          blockId={block._key}
-        />
+        <TextBlockWrapper layout={layout}>
+          {first ? (
+            <AnimatedTextCells
+              scrollYProgress={scrollYProgress}
+              blockId={block._key}
+            />
+          ) : (
+            <TextCells blockId={block._key} />
+          )}
+          <TextBlock
+            heading={heading}
+            description={description}
+            scrollYProgress={scrollYProgress}
+            first={first}
+          />
+        </TextBlockWrapper>
       </div>
-      <div ref={ref} className={cn(first ? "h-[150vh]" : "h-[100vh]")}></div>
+      {first ? <div ref={ref} className="h-[150vh]"></div> : null}
     </div>
   );
 }
