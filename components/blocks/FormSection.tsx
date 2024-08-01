@@ -10,6 +10,7 @@ import TextBlockWrapper, {
   TextBlock,
   TextCells,
 } from "./TextBlock";
+import Form from "../form";
 
 export default function FormSection({
   block,
@@ -52,6 +53,7 @@ export default function FormSection({
             scrollYProgress={scrollYProgress}
             first={first}
           />
+          <Form />
         </TextBlockWrapper>
       </div>
       {first ? <div ref={ref} className="h-[150vh]"></div> : null}
