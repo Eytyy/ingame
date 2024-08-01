@@ -18,7 +18,11 @@ export default defineType({
       title: "Content",
       name: "content",
       type: "array",
-      of: [{ type: "block.twoColSection" }, { type: "block.statsSection" }],
+      of: [
+        { type: "block.twoColSection" },
+        { type: "block.statsSection" },
+        { type: "block.formSection" },
+      ],
     }),
   ],
 });

@@ -6,7 +6,15 @@ export interface HomePagePayload {
     width: number;
     height: number;
   };
-  content: Array<ITwoColSection | IStatsSection>;
+  content: Array<ITwoColSection | IStatsSection | IFormSection>;
+}
+
+export interface IFormSection {
+  _type: "block.formSection";
+  _key: string;
+  heading: string;
+  description: string;
+  image: ImageProps;
 }
 
 export interface ITwoColSection {

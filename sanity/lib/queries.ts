@@ -25,6 +25,13 @@ export const homePageQuery = groq`
           ${imageFields}
         }
       },
+      _type == "block.formSection" => {
+        heading,
+        description,
+        image {
+          ${imageFields}
+        }
+      },
       _type == "block.statsSection" => {
         noOfItemsPerRow,
         stats[] {
