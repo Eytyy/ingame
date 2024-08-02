@@ -7,7 +7,6 @@ import HomePage from "@/components/pages/HomePage";
 
 export default async function Home() {
   const initial = await loadHomePage();
-
   if (draftMode().isEnabled) {
     return <HomePagePreview initial={initial} />;
   }
@@ -23,5 +22,6 @@ export default async function Home() {
       </div>
     );
   }
+
   return <HomePage data={initial.data} />;
 }

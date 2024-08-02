@@ -5,6 +5,11 @@ export default defineType({
   type: "object",
   fields: [
     defineField({
+      name: "id",
+      title: "ID",
+      type: "string",
+    }),
+    defineField({
       name: "noOfItemsPerRow",
       title: "No of Items Per Row",
       type: "number",

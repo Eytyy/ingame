@@ -5,7 +5,7 @@ const imageFields = groq`
   ...asset-> {
     'lqip': metadata.lqip,
     'width': metadata.dimensions.width,
-    'height': metadata.dimensions.height
+    'height': metadata.dimensions.height,
   }
 `;
 
@@ -38,7 +38,10 @@ export const homePageQuery = groq`
           _key,
           stat,
           format,
-          description
+          description,
+          color {
+            hex
+          }
         }
       }
     }

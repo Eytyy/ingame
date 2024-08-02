@@ -20,6 +20,11 @@ export default defineType({
       title: "Description",
       type: "text",
     }),
+    defineField({
+      name: "color",
+      title: "Color",
+      type: "color",
+    }),
   ],
   preview: {
     select: {

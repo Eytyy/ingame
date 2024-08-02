@@ -11,6 +11,7 @@ import {
 import { default as NextImage } from "next/image";
 import { useAppContext } from "@/context/AppContext";
 import { drawPixilatedImage } from "../lib/canvas.utils";
+import { urlForImage } from "@/sanity/lib/image";
 
 interface IHero {
   image: ImageProps & {
@@ -24,6 +25,7 @@ interface IHero {
 export default function Hero(props: IHero) {
   const [image, setImage] = React.useState<HTMLImageElement | null>(null);
   const { windowWidth: w } = useAppContext();
+  const imageURL = urlForImage(props.image).width(1000).url();
 
   return w !== 0 && image ? (
     <Canvas image={image} scrollYProgress={props.scrollYProgress} />
@@ -32,7 +34,7 @@ export default function Hero(props: IHero) {
       <NextImage
         priority
         onLoad={(e) => setImage(e.target as HTMLImageElement)}
-        src="/taxi.webp"
+        src={imageURL}
         alt="Taxi"
         fill
       />

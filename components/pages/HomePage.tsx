@@ -8,6 +8,7 @@ import Hero from "../Hero";
 import Block from "../blocks";
 import { useMotionValueEvent, useScroll } from "framer-motion";
 import { useAppContext } from "@/context/AppContext";
+import FirstTwoColsSection from "../blocks/FirstTwoColsSection";
 
 export interface HomePageProps {
   data: HomePagePayload;
@@ -45,21 +46,29 @@ export default function HomePage({ data, encodeDataAttribute }: HomePageProps) {
     }
   });
 
+  const [firstBlock, ...rest] = data.content;
+
   return (
-    <div
-      style={{
-        backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-      }}
-    >
-      <Hero image={data.image} scrollYProgress={scrollYProgress} />
-      <Header visible={visible} />
-      <div ref={ref} className="h-screen" />
-      {data.content.map((block, index) => (
-        <Block block={block} index={index} key={block._key} />
-      ))}
-    </div>
+    <>
+      <div
+        style={{
+          backgroundImage: backgroundImage ? `url(${backgroundImage})` : "",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundAttachment: "fixed",
+        }}
+      >
+        <Hero image={data.image} scrollYProgress={scrollYProgress} />
+        <Header visible={visible} />
+        <div ref={ref} className="h-screen" />
+
+        {firstBlock._type == "block.twoColSection" ? (
+          <FirstTwoColsSection block={firstBlock} />
+        ) : null}
+        {rest.map((block) => (
+          <Block block={block} key={block._key} />
+        ))}
+      </div>
+    </>
   );
 }

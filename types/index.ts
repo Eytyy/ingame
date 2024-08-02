@@ -39,6 +39,9 @@ export interface IStatBlock {
   stat: number;
   format: string;
   description: string;
+  color: {
+    hex: string;
+  };
 }
 
 export interface ImageProps extends Image {

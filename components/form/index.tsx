@@ -56,7 +56,7 @@ export default function Form() {
   };
 
   return (
-    <div className="relative px-[calc(var(--cellW)*0.5)]">
+    <div className="relative p-[var(--cellW)] pt-0 lg:px-[calc(var(--cellW)*0.5)] lg:pb-0">
       <form
         onSubmit={handleSubmit(processForm)}
         className="flex flex-col space-y-8"

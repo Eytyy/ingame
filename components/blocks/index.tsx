@@ -6,17 +6,16 @@ import FormSection from "./FormSection";
 
 type Props = {
   block: HomePagePayload["content"][number];
-  index: number;
 };
 
-export default function Block({ block, index }: Props) {
+export default function Block({ block }: Props) {
   switch (block._type) {
     case "block.twoColSection":
-      return <TwoColsSection block={block} first={index == 0} />;
+      return <TwoColsSection block={block} />;
     case "block.statsSection":
       return <StatsSection block={block} />;
     case "block.formSection":
-      return <FormSection block={block} first={index == 0} />;
+      return <FormSection block={block} />;
     default:
       return null;
   }

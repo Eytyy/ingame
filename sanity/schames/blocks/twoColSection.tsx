@@ -5,6 +5,11 @@ export default defineType({
   type: "object",
   fields: [
     defineField({
+      name: "id",
+      title: "ID",
+      type: "string",
+    }),
+    defineField({
       name: "layout",
       title: "Layout",
       type: "string",

@@ -26,7 +26,6 @@ export function drawPixilatedImage({
   output?: "canvas" | "squares";
 }): HTMLCanvasElement | ISquare[] {
   const offscreenCanvas = document.createElement("canvas");
-
   offscreenCanvas.width = w;
   offscreenCanvas.height = h;
   const ctx = offscreenCanvas.getContext("2d");
