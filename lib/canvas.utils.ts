@@ -60,16 +60,23 @@ export function drawPixilatedImage({
         let g = imgData.data[i + 1];
         let b = imgData.data[i + 2];
         let a = imgData.data[i + 3];
-        const [h, s, l] = rgbToHsl(r, g, b, a);
-        const adjustedS = s * saturationLevel;
+        const firstOrLastRow = y === 0 || y === h - pl;
+        const firstOrLastColumn = x === 0 || x === w - pl;
+        const hsl = rgbToHsl(r, g, b, a);
+        const adjustedS = hsl[1] * saturationLevel;
         squares.push({
           color: {
-            h: h * 360,
+            h: hsl[0] * 360,
             s: adjustedS * 100,
-            l: l * 100,
+            l: hsl[2] * 100,
           },
           rowIndex: y / pl,
-          visibilityChance: Math.random() > 0.2 ? 0 : 1,
+          visibilityChance:
+            firstOrLastRow || firstOrLastColumn
+              ? Math.random() > 0.3
+                ? 0
+                : 1
+              : 0,
         });
       }
     }
