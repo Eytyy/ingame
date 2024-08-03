@@ -40,6 +40,7 @@ export interface SettingsPayload {
 }
 
 export interface HomePagePayload {
+  heroTitle: string;
   image: Image & {
     lqip: string;
     width: number;

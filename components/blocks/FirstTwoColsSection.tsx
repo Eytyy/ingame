@@ -7,18 +7,20 @@ import { useAppContext } from "@/context/AppContext";
 import FirstImageBlock from "./FirstImageBlock";
 import { AnimatedTextBlock } from "./AnimatedTextBlock";
 import { cn } from "@/lib/utils";
-export default function FirstTwoColsSection({
-  block,
-}: {
-  block: ITwoColSection;
-}) {
+
+export const FirstTwoColsSection = React.forwardRef<
+  HTMLDivElement,
+  {
+    block: ITwoColSection;
+  }
+>(({ block }, ref) => {
   const { image, heading, description, layout } = block;
 
   const { cellW } = useAppContext();
 
-  const ref = React.useRef<HTMLDivElement>(null);
+  const spacerRef = React.useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
-    target: ref,
+    target: spacerRef,
     offset: [`${cellW}px end`, `end ${cellW}px`],
   });
 
@@ -44,7 +46,10 @@ export default function FirstTwoColsSection({
           />
         </div>
       </div>
-      <div ref={ref} className={"h-[150vh]"} />
+      <div ref={spacerRef} className="h-[150vh]" />
+      <div className="end" ref={ref}></div>
     </div>
   );
-}
+});
+
+FirstTwoColsSection.displayName = "FirstTwoColsSection";

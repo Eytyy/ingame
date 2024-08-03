@@ -30,7 +30,7 @@ export default function Hero(props: IHero) {
   return w !== 0 && image ? (
     <Canvas image={image} scrollYProgress={props.scrollYProgress} />
   ) : (
-    <div className="aspect-video h-screen">
+    <div className="h-screen w-full">
       <NextImage
         priority
         onLoad={(e) => setImage(e.target as HTMLImageElement)}
