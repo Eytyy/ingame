@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  motion,
-  MotionValue,
-  useMotionValueEvent,
-  Variants,
-} from "framer-motion";
+import { motion, MotionValue, useMotionValueEvent } from "framer-motion";
 import React from "react";
 import useTextWrapperBounds from "@/hooks/useTextWrapperBounds";
 import AnimatedTextCells from "./AnimatedTextCells";
