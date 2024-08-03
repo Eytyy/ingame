@@ -26,28 +26,29 @@ export const FirstTwoColsSection = React.forwardRef<
 
   return (
     <div>
-      <div className="sticky top-0 pt-[var(--cellW)] text-white lg:grid lg:grid-cols-12">
-        <FirstImageBlock
-          image={image}
-          layout={layout}
-          scrollYProgress={scrollYProgress}
-        />
-        <div
-          className={cn(
-            "relative",
-            "col-span-5 row-start-1",
-            layout === "contentImage" ? "col-start-1" : "col-start-8",
-          )}
-        >
-          <AnimatedTextBlock
-            heading={heading}
-            description={description}
+      <div className="sticky top-0 pt-[calc(var(--cellW)*2)] text-white lg:pt-[var(--cellW)]">
+        <div className="hello lg:grid lg:grid-cols-12" ref={ref}>
+          <FirstImageBlock
+            image={image}
+            layout={layout}
             scrollYProgress={scrollYProgress}
           />
+          <div
+            className={cn(
+              "relative",
+              "col-span-5 row-start-1",
+              layout === "contentImage" ? "col-start-1" : "col-start-8",
+            )}
+          >
+            <AnimatedTextBlock
+              heading={heading}
+              description={description}
+              scrollYProgress={scrollYProgress}
+            />
+          </div>
         </div>
       </div>
       <div ref={spacerRef} className="h-[150vh]" />
-      <div className="end" ref={ref}></div>
     </div>
   );
 });

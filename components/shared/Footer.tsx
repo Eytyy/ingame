@@ -11,7 +11,7 @@ export default function Footer({ address, social, partners }: Props) {
   return (
     <footer
       className={cn(
-        "grid gap-10 bg-black px-[var(--cellW)] pb-[var(--cellW)]",
+        "relative grid gap-10 bg-black px-[var(--cellW)] pb-[var(--cellW)]",
         "lg:grid-cols-5 lg:px-[calc(var(--cellW)*0.5)] lg:py-[calc(var(--cellW)*0.5)]",
       )}
     >

@@ -5,6 +5,7 @@ import Logo from "./shared/Logo";
 
 interface IHeader {
   visible: boolean;
+  scrollYProgress: MotionValue<number>;
 }
 
 const container: Variants = {
@@ -42,10 +43,18 @@ const text: Variants = {
 };
 
 export default function Header(props: IHeader) {
+  const translateY = useTransform(
+    props.scrollYProgress,
+    [0, 1],
+    ["0%", "-100%"],
+  );
   return (
-    <motion.header className="sticky top-0 z-50 grid grid-cols-12">
+    <motion.header
+      className="sticky top-0 z-50 grid grid-cols-12"
+      style={{ translateY }}
+    >
       <motion.div
-        className="relative col-span-2 col-start-1 row-span-1 row-start-1 grid grid-cols-2"
+        className="relative col-span-4 col-start-1 row-span-1 row-start-1 grid grid-cols-2 lg:col-span-2"
         variants={container}
         initial="hidden"
         animate={props.visible ? "visible" : "hidden"}
