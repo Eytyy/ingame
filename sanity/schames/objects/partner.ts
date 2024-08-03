@@ -31,20 +31,5 @@ export default defineType({
       title: "name",
       media: "logo",
     },
-    prepare({ title, media }) {
-      const url = media ? urlForImage(media).url() : null;
-      return {
-        title,
-        media: url ? (
-          () => (
-            <div className="h-full w-full flex-1 bg-black px-1">
-              <img src={url} alt={title} />
-            </div>
-          )
-        ) : (
-          <FaImage />
-        ),
-      };
-    },
   },
 });
