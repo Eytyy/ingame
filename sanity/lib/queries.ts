@@ -14,6 +14,7 @@ export const homePageQuery = groq`
     image {
       ${imageFields}
     },
+    heroTitle,
     content[] {
       _type,
       _key,
@@ -43,6 +44,46 @@ export const homePageQuery = groq`
             hex
           }
         }
+      }
+    }
+  }
+`;
+
+export const settingsQuery = groq`
+  *[_type == "settings"][0] {
+    menu[] {
+      _key,
+      title,
+      link,
+    },
+    'seo': {
+      seoTitle,
+      seoDescription,
+      ogImage {
+        ${imageFields}
+      }
+    },
+    'footer': {
+      address[] {
+        _key,
+        city,
+        addressLine,
+        addressLink,
+        email,
+        phone
+      },
+      social[],
+      partners[] {
+        _key,
+        name,
+        "logo": logo {
+          ...asset-> {
+            'url': url,
+            'width': metadata.dimensions.width,
+            'height': metadata.dimensions.height,
+          }
+        },
+        url
       }
     }
   }

@@ -1,4 +1,43 @@
 import type { Image } from "sanity";
+export interface IMenuItem {
+  _key: string;
+  title: string;
+  link: string;
+}
+
+export interface SettingsPayload {
+  menu: Array<IMenuItem>;
+  seo: {
+    seoTitle: string;
+    seoDescription: string;
+    seoImage: ImageProps;
+  };
+  footer: {
+    address: Array<{
+      _key: string;
+      city: string;
+      addressLine: string;
+      addressLink: string;
+      email: string;
+      phone: string;
+    }>;
+    social: Array<{
+      _key: string;
+      platform: string;
+      link: string;
+    }>;
+    partners: Array<{
+      _key: string;
+      name: string;
+      logo: {
+        url: string;
+        width: number;
+        height: number;
+      };
+      url: string;
+    }>;
+  };
+}
 
 export interface HomePagePayload {
   image: Image & {

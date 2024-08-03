@@ -61,7 +61,6 @@ export function drawPixilatedImage({
         let b = imgData.data[i + 2];
         let a = imgData.data[i + 3];
         const firstOrLastRow = y === 0 || y === h - pl;
-        const firstOrLastColumn = x === 0 || x === w - pl;
         const hsl = rgbToHsl(r, g, b, a);
         const adjustedS = hsl[1] * saturationLevel;
         squares.push({
@@ -71,12 +70,7 @@ export function drawPixilatedImage({
             l: hsl[2] * 100,
           },
           rowIndex: y / pl,
-          visibilityChance:
-            firstOrLastRow || firstOrLastColumn
-              ? Math.random() > 0.3
-                ? 0
-                : 1
-              : 0,
+          visibilityChance: firstOrLastRow ? (Math.random() > 0.5 ? 0 : 1) : 0,
         });
       }
     }

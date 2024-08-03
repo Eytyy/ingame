@@ -75,7 +75,7 @@ export default defineType({
       title: "Social Links",
       type: "array",
       group: "footer",
-      of: [{ type: "linkExternal" }],
+      of: [{ type: "socialLink" }],
     }),
     defineField({
       name: "partners",

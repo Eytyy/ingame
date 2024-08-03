@@ -3,9 +3,9 @@ import "server-only";
 import * as queryStore from "@sanity/react-loader";
 import { draftMode } from "next/headers";
 
-import { homePageQuery } from "@/sanity/lib/queries";
+import { homePageQuery, settingsQuery } from "@/sanity/lib/queries";
 import { client } from "@/sanity/lib/client";
-import { HomePagePayload } from "@/types";
+import { HomePagePayload, SettingsPayload } from "@/types";
 import { token } from "../lib/token";
 
 const serverClient = client.withConfig({
@@ -59,9 +59,17 @@ export function loadHomePage() {
     homePageQuery,
     {},
     {
-      next: {
-        tags: ["home"],
-      },
+      next: { tags: ["home"] },
+    },
+  );
+}
+
+export function loadSettings() {
+  return loadQuery<SettingsPayload | null>(
+    settingsQuery,
+    {},
+    {
+      next: { tags: ["settings"] },
     },
   );
 }
