@@ -1,4 +1,6 @@
 import {
+  animate,
+  AnimationPlaybackControls,
   useInView,
   useMotionValue,
   useMotionValueEvent,
@@ -11,25 +13,25 @@ type Props = {
   direction?: "up" | "down";
 };
 
-export default function Counter({ value, direction = "up" }: Props) {
+export default function Counter({ value: n, direction = "up" }: Props) {
   const ref = React.useRef<HTMLSpanElement>(null);
-  const motionValue = useMotionValue(direction === "up" ? 0 : value);
-  const springValue = useSpring(motionValue, { damping: 10, stiffness: 100 });
   const isInView = useInView(ref, {
     once: true,
-    margin: "-100px",
   });
-  const [count, setCount] = React.useState(0);
+  const [value, setValue] = React.useState(0);
 
   React.useEffect(() => {
-    if (isInView) {
-      motionValue.set(direction === "up" ? value : 0);
-    }
-  }, [isInView, motionValue, value, direction]);
+    let count: AnimationPlaybackControls;
 
-  useMotionValueEvent(springValue, "change", (latest) => {
-    setCount(Math.min(Math.round(latest), value));
-  });
-
-  return <span ref={ref}>{count}</span>;
+    count = animate(0, n, {
+      duration: 1,
+      onUpdate(value) {
+        setValue(parseInt(value.toFixed(2)));
+      },
+    });
+    return () => {
+      if (count) count.stop();
+    };
+  }, [n, isInView]);
+  return <span ref={ref}>{value}</span>;
 }
