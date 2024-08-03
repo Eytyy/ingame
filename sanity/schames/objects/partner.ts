@@ -1,5 +1,3 @@
-import { urlForImage } from "@/sanity/lib/image";
-import { FaImage } from "react-icons/fa";
 import { defineField, defineType } from "sanity";
 
 export default defineType({

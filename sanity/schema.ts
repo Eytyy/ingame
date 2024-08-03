@@ -5,5 +5,12 @@ import settings from "./schames/settings";
 import { objects } from "./schames/objects";
 
 export const schema: { types: SchemaTypeDefinition[] } = {
-  types: [home, settings, ...blocks, ...objects],
+  types: [
+    home,
+    settings,
+    // @ts-ignore
+    ...objects,
+    // @ts-ignore
+    ...blocks,
+  ],
 };

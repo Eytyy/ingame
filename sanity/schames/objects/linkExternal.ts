@@ -1,7 +1,7 @@
-import { defineField } from "sanity";
+import { defineField, defineType } from "sanity";
 import { FaGlobe } from "react-icons/fa";
 
-export default defineField({
+export default defineType({
   title: "External Link",
   name: "linkExternal",
   type: "object",
