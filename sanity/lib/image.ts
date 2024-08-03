@@ -15,3 +15,10 @@ export const urlForImage = (source: Image) => {
     .fit("crop")
     .crop("focalpoint");
 };
+
+export function urlForOpenGraphImage(image: Image | undefined) {
+  if (!image) {
+    return "";
+  }
+  return urlForImage(image)?.width(1200).height(627).fit("crop").url();
+}

@@ -1,20 +1,28 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
+import { motion, useInView, Variants } from "framer-motion";
 import React from "react";
 import { cn } from "@/lib/utils";
-import { containerVariants, pVariants } from "./text.animations";
 
 interface ITextBlock {
   heading: string;
   description: string;
 }
 
+const containerVariants: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.3, ease: "easeInOut" } },
+};
+
+const pVariants: Variants = {
+  hidden: { opacity: 0, y: 100, transition: { duration: 0.5 } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
 export function TextBlock({ heading, description }: ITextBlock) {
   const ref = React.useRef<HTMLDivElement>(null);
   const inView = useInView(ref, {
     once: true,
-    amount: "all",
   });
   return (
     <motion.div
@@ -28,7 +36,7 @@ export function TextBlock({ heading, description }: ITextBlock) {
       animate={inView ? "visible" : "hidden"}
     >
       <motion.p
-        className="font-sans text-3xl font-bold uppercase leading-[1.2] lg:text-[2vw]"
+        className="font-sans text-2xl font-bold uppercase leading-[1.2] lg:text-[2vw]"
         variants={pVariants}
       >
         {heading}

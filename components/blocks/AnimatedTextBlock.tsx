@@ -37,7 +37,7 @@ export function AnimatedTextBlock({
         animate={showText ? "visible" : "hidden"}
       >
         <motion.p
-          className="font-sans text-3xl font-bold uppercase leading-[1.2] lg:text-[2vw]"
+          className="font-sans text-2xl font-bold uppercase leading-[1.2] lg:text-[2vw]"
           variants={pVariants}
         >
           {heading}
