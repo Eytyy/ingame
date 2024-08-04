@@ -69,7 +69,7 @@ export function loadSettings() {
     settingsQuery,
     {},
     {
-      next: { tags: ["settings"] },
+      next: { tags: ["settings", "home"] },
     },
   );
 }
