@@ -11,7 +11,7 @@ export default function StatBlock({
   return (
     <>
       <p
-        className="text-[10vw] font-bold md:text-[5vw] lg:text-[3vw]"
+        className="text-[8vw] font-bold md:text-[5vw] lg:text-[3vw]"
         style={{
           color: color.hex,
         }}
@@ -19,7 +19,7 @@ export default function StatBlock({
         <Counter value={stat} />
         {format}
       </p>
-      <p className="text-[5vw] leading-[1.3] md:text-base lg:text-[1.5vw] xl:text-lg">
+      <p className="text-[4vw] leading-[1.3] md:text-base lg:text-[1.5vw] xl:text-lg">
         {description}
       </p>
     </>
