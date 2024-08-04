@@ -32,6 +32,7 @@ export default function Hero(props: IHero) {
   ) : (
     <div className="h-screen w-full">
       <NextImage
+        objectFit="cover"
         priority
         onLoad={(e) => setImage(e.target as HTMLImageElement)}
         src={imageURL}

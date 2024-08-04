@@ -16,7 +16,7 @@ export function drawPixilatedImage({
   pixelationLevel,
   saturationLevel,
   image,
-  output = "canvas",
+  output,
 }: {
   w: number;
   h: number;
@@ -33,7 +33,13 @@ export function drawPixilatedImage({
   if (!ctx) return offscreenCanvas;
   const pl = Math.round(w / pixelationLevel);
 
-  ctx.drawImage(image, 0, 0, w, h);
+  const { drawWidth, drawHeight, xOffset, yOffset } = resizeImageToCoverCanvas(
+    image,
+    w,
+    h,
+  );
+  ctx.drawImage(image, xOffset, yOffset, drawWidth, drawHeight);
+
   const imgData = ctx.getImageData(0, 0, w, h);
   ctx.clearRect(0, 0, w, h);
 
@@ -109,3 +115,26 @@ export const rgbToHsl = (r: number, g: number, b: number, a: number) => {
 
   return [h, s, l, a];
 };
+
+function resizeImageToCoverCanvas(
+  image: HTMLImageElement,
+  canvasWidth: number,
+  canvasHeight: number,
+) {
+  const imageAspectRatio = image.width / image.height;
+  const canvasAspectRatio = canvasWidth / canvasHeight;
+  let drawWidth, drawHeight;
+
+  if (canvasAspectRatio > imageAspectRatio) {
+    drawWidth = canvasWidth;
+    drawHeight = canvasWidth / imageAspectRatio;
+  } else {
+    drawWidth = canvasHeight * imageAspectRatio;
+    drawHeight = canvasHeight;
+  }
+
+  const xOffset = (canvasWidth - drawWidth) / 2;
+  const yOffset = (canvasHeight - drawHeight) / 2;
+
+  return { drawWidth, drawHeight, xOffset, yOffset };
+}

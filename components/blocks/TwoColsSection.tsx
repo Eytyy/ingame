@@ -11,7 +11,7 @@ export default function TwoColsSection({ block }: { block: ITwoColSection }) {
 
   return (
     <div>
-      <div className="sticky top-0 text-white lg:grid lg:grid-cols-12">
+      <div className="sticky top-0 text-white lg:grid lg:grid-cols-12 lg:pt-[var(--cellW)]">
         <ImageBlock image={image} layout={layout} />
         <TextBlockWrapper layout={layout}>
           <TextBlock heading={heading} description={description} />

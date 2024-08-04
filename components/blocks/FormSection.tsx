@@ -12,7 +12,7 @@ export default function FormSection({ block }: { block: IFormSection }) {
 
   return (
     <div>
-      <div className="sticky top-0 text-white lg:grid lg:grid-cols-12">
+      <div className="sticky top-0 text-white lg:grid lg:grid-cols-12 lg:pt-[var(--cellW)]">
         <ImageBlock image={image} layout="contentImage" />
         <TextBlockWrapper layout="contentImage">
           <TextBlock heading={heading} description={description} />

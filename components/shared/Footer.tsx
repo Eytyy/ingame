@@ -9,40 +9,43 @@ type Props = SettingsPayload["footer"];
 
 export default function Footer({ address, social, partners }: Props) {
   return (
-    <footer
-      className={cn(
-        "relative grid gap-10 bg-black px-[var(--cellW)] pb-[var(--cellW)]",
-        "lg:grid-cols-5 lg:px-[calc(var(--cellW)*0.5)] lg:py-[calc(var(--cellW)*0.5)]",
-      )}
-    >
-      <section className="lg:col-span-2">
-        <header>
-          <h3 className="sr-only">Our Locations</h3>
-        </header>
-        <ColGrid>
-          {address.map((address) => (
-            <AddressLocation key={address._key} {...address} />
-          ))}
-        </ColGrid>
-      </section>
-      <section className="lg:col-span-2">
-        <header className="mb-3">
-          <h3 className="m text-sm">Our Partners</h3>
-        </header>
-        <div className="flex gap-10">
-          {partners.map((partner) => (
-            <Partner key={partner._key} {...partner} />
-          ))}
+    <footer className="lg:pt-[var(--cellW)]">
+      <div
+        className={cn(
+          "relative grid gap-10 bg-black px-[var(--cellW)] pb-[var(--cellW)]",
+          "lg:grid-cols-5 lg:px-[calc(var(--cellW)*0.5)] lg:py-[calc(var(--cellW)*0.5)]",
+        )}
+      >
+        <section className="lg:col-span-2">
+          <header>
+            <h3 className="sr-only">Our Locations</h3>
+          </header>
+          <ColGrid>
+            {address.map((address) => (
+              <AddressLocation key={address._key} {...address} />
+            ))}
+          </ColGrid>
+        </section>
+        <section className="lg:col-span-2">
+          <header className="mb-3">
+            <h3 className="m text-sm">Our Partners</h3>
+          </header>
+          <div className="flex gap-10">
+            {partners.map((partner) => (
+              <Partner key={partner._key} {...partner} />
+            ))}
+          </div>
+        </section>
+        <div className="space-y-4 text-sm">
+          <p>© {new Date().getFullYear()} ingame.All rights reserved.</p>
+          <div className="max-w-[120px]">
+            <Logo />
+          </div>
+          <p>
+            For company information and other legal bits, see our Privacy
+            Policy.
+          </p>
         </div>
-      </section>
-      <div className="space-y-4 text-sm">
-        <p>© {new Date().getFullYear()} ingame.All rights reserved.</p>
-        <div className="max-w-[120px]">
-          <Logo />
-        </div>
-        <p>
-          For company information and other legal bits, see our Privacy Policy.
-        </p>
       </div>
     </footer>
   );
