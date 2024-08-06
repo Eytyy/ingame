@@ -9,7 +9,7 @@ import TextArea from "./TextArea";
 import Input from "./Input";
 
 async function sendEmail(data: { [key: string]: any }) {
-  const response = await fetch("/api/form-submission", {
+  const response = await fetch("/api/send", {
     method: "POST",
     body: JSON.stringify(data),
     headers: {
@@ -26,13 +26,9 @@ async function sendEmail(data: { [key: string]: any }) {
 export default function Form() {
   const [submitting, setSubmitting] = React.useState(false);
   const schema = z.object({
-    _id: z.string(),
     name: z.string().min(1, { message: "Name is required" }),
     email: z.string().email({ message: "Invalid email" }),
-    message: z.object({
-      value: z.string().min(1, { message: "Message is required" }),
-      label: z.string().min(1, { message: "Message is required" }),
-    }),
+    message: z.string().min(1, { message: "Message is required" }),
   });
 
   const { reset, register, handleSubmit, formState } = useForm<
@@ -69,7 +65,6 @@ export default function Form() {
           </div>
           <div>
             {/* @ts-ignore */}
-
             <Input type="email" label="Email" {...register("email")} />
             <FormMessage message={formState.errors.email?.message as string} />
           </div>
@@ -78,7 +73,7 @@ export default function Form() {
 
             <TextArea label="Message" {...register("message")} />
             <FormMessage
-              message={formState.errors.message?.["value"]?.message as string}
+              message={formState.errors.message?.message as string}
             />
           </div>
         </div>

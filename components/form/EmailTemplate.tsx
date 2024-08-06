@@ -1,30 +1,22 @@
-import { Tailwind } from '@react-email/tailwind'
+import { Tailwind } from "@react-email/tailwind";
 
 interface EmailTemplateProps {
-  name: string
-  email: string
+  name: string;
+  email: string;
   message: {
-    value?: string
-    label?: string
-  }
-  customFields: {
-    [key: string]: {
-      label: string
-      value: string
-    }
-  }
+    value?: string;
+    label?: string;
+  };
 }
 
 const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
   name,
   email,
   message,
-  customFields,
 }) => {
-  const fields = Object.values(customFields)
   return (
     <Tailwind>
-      <div className="font-sans space-y-1">
+      <div className="space-y-1 font-sans">
         <h1>
           {name}, {email}
         </h1>
@@ -34,17 +26,9 @@ const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
             <p>{message.value}</p>
           </div>
         )}
-        <div>
-          {fields.map((field, index) => (
-            <div key={`customField${index}`}>
-              <h2 className="font-bold">{field.label}</h2>
-              <p>{field.value}</p>
-            </div>
-          ))}
-        </div>
       </div>
     </Tailwind>
-  )
-}
+  );
+};
 
-export default EmailTemplate
+export default EmailTemplate;

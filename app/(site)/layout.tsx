@@ -4,6 +4,7 @@ import { AppProvider } from "@/context/AppContext";
 import { loadSettings } from "@/sanity/loader/loadQuery";
 import Footer from "@/components/shared/Footer";
 import { urlForOpenGraphImage } from "@/sanity/lib/image";
+import { Toaster } from "sonner";
 
 const metadata = {
   title:
@@ -44,6 +45,7 @@ export default async function SiteLayout({
     <AppProvider>
       {children}
       <Footer {...settings.data.footer} />
+      <Toaster />
     </AppProvider>
   );
 }
